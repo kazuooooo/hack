@@ -1,0 +1,19 @@
+.addRootTaskLabel {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+.addRootTask {
+  height: 50px;
+  display: inline-flex;
+}
+
+.addRootTaskButton {
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+}
+
+.taskWrapper {
+  width: 400px;
+}

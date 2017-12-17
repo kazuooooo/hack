@@ -1,0 +1,14 @@
+.checkbox {
+  width: 32px;
+}
+
+.task {
+  display: flex;
+  width: 0px;
+  align-items: center;
+}
+
+.taskText {
+  margin-right: 24px;
+  width: 200px;
+}
