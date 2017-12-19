@@ -36,13 +36,16 @@ class Tasks extends Component {
     let tasks = []
     for (var i = 0; i < this.props.tasks.child_tasks.length; i++) {
       let task = this.props.tasks.child_tasks[i]
-      tasks.push(
-        <Task
-          key={i}
-          addTask={this.props.addTask}
-          updateTask={this.props.updateTask}
-          task={task}>
-        </Task>);
+      if(task != null){
+        tasks.push(
+          <Task
+            key={i}
+            addTask={this.props.addTask}
+            updateTask={this.props.updateTask}
+            deleteTask={this.props.deleteTask}
+            task={task}>
+          </Task>);
+      }
     }
 
     return (

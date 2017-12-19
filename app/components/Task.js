@@ -4,6 +4,7 @@ import Timer from './Timer'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider'
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import ContentDeleteSweep from 'material-ui/svg-icons/content/delete-sweep'
 import TextField from 'material-ui/TextField';
 import Checkbox from 'material-ui/Checkbox';
 import {List, ListItem} from 'material-ui/List';
@@ -20,11 +21,14 @@ class Task extends Component {
     this.calcMarginLeft     = this.calcMarginLeft.bind(this);
     this.editTask           = this.editTask.bind(this);
     this.switchCompleteTask = this.switchCompleteTask.bind(this);
+    this.deleteTask         = this.deleteTask.bind(this);
     this.state = {text: props.task.text, paddingLeft: this.calcMarginLeft()};
   }
 
   handleAddChildTask(event) {
     let index_path        = this.props.task.index_path
+    // TODO: parent_index は不要.
+    // reducerで処理する
     let parent_index_path = index_path.slice(0, index_path.length)
     this.props.addTask(parent_index_path, {text: '', active: true, complete: false})
     event.preventDefault();
@@ -48,6 +52,10 @@ class Task extends Component {
     this.props.updateTask(this.props.task.index_path, {complete: !this.props.task.complete})
   }
 
+  deleteTask(){
+    this.props.deleteTask(this.props.task.index_path)
+  }
+
   calcMarginLeft(){
     return this.props.task.index_path.length * 24;
   }
@@ -56,16 +64,19 @@ class Task extends Component {
     // TODO: css 切り出し
     let child_tasks = []
     for (var i = 0; i < this.props.task.child_tasks.length; i++) {
-      let task = this.props.task.child_tasks[i]
-      child_tasks.push(
-        <Task
-          key={i}
-          addTask={this.props.addTask}
-          updateTask={this.props.updateTask}
-          switchActiveTask={this.props.switchActiveTask}
-          task={task}>
-        >
-        </Task>);
+      let child_task = this.props.task.child_tasks[i]
+      if(child_task != null) {
+        child_tasks.push(
+          <Task
+            key={i}
+            addTask={this.props.addTask}
+            updateTask={this.props.updateTask}
+            switchActiveTask={this.props.switchActiveTask}
+            deleteTask={this.props.deleteTask}
+            task={child_task}>
+            >
+          </Task>);
+      }
     }
 
     let context_dom = (
@@ -74,6 +85,14 @@ class Task extends Component {
         <div onClick={this.editTask} className={styles.taskText}>
           {this.state.text}
         </div>
+        <MuiThemeProvider>
+          <FloatingActionButton
+            mini={true}
+            backgroundColor="#d10000"
+            onClick={this.deleteTask}>
+            <ContentDeleteSweep />
+          </FloatingActionButton>
+        </MuiThemeProvider>
         <MuiThemeProvider>
           <FloatingActionButton
             mini={true}
