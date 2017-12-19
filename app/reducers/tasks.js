@@ -1,5 +1,5 @@
 // @flow
-import { ADD_TASK, START_TASK, END_TASK, UPDATE_TASK, EDIT_TASK } from '../actions/tasks';
+import { ADD_TASK, START_TASK, END_TASK, UPDATE_TASK, DELETE_TASK } from '../actions/tasks';
 
 export default function tasks(tasks = {child_tasks: []}, action) {
   switch (action.type) {
@@ -25,6 +25,9 @@ export default function tasks(tasks = {child_tasks: []}, action) {
     case UPDATE_TASK:
       updateTask(tasks, action.index_path, action.params)
       return Object.assign({}, tasks)
+    case DELETE_TASK:
+      deleteTask(tasks, action.index_path)
+      return Object.assign({}, tasks)
     case START_TASK:
       return tasks;
     case END_TASK:
@@ -39,9 +42,19 @@ function updateTask(tasks, index_path, params){
   Object.assign(task, params)
 }
 
+function deleteTask(tasks, index_path) {
+  let parent_task = getTask(tasks, getParenPath(index_path))
+  let index_in_parent = index_path.slice(-1)
+  parent_task.child_tasks[index_in_parent] = null;
+}
+
 function getTask(tasks, index_path) {
   const reducer = (current_task, index) => {
     return current_task.child_tasks[index]
   };
   return index_path.reduce(reducer, tasks)
+}
+
+function getParenPath(index_path){
+  return index_path.slice(0, index_path.length - 1)
 }
