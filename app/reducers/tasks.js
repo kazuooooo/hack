@@ -9,7 +9,7 @@ export default function tasks(tasks = {child_tasks: []}, action) {
       if(action.parent_index_path == null){
         action.task_object.index_path = [tasks.child_tasks.length]
         tasks.child_tasks.push(action.task_object)
-        return Object.assign({}, tasks)
+        return persistAndReturnState(Object.assign({}, tasks))
       }else{
 
         const parent_task = getTask(tasks, action.parent_index_path);
@@ -20,14 +20,14 @@ export default function tasks(tasks = {child_tasks: []}, action) {
 
         // add self to parent child task
         parent_task.child_tasks.push(action.task_object)
-        return Object.assign({}, tasks)
+        return persistAndReturnState(Object.assign({}, tasks))
       }
     case UPDATE_TASK:
       updateTask(tasks, action.index_path, action.params)
-      return Object.assign({}, tasks)
+      return persistAndReturnState(Object.assign({}, tasks))
     case DELETE_TASK:
       deleteTask(tasks, action.index_path)
-      return Object.assign({}, tasks)
+      return persistAndReturnState(Object.assign({}, tasks))
     case START_TASK:
       return tasks;
     case END_TASK:
@@ -57,4 +57,9 @@ function getTask(tasks, index_path) {
 
 function getParenPath(index_path){
   return index_path.slice(0, index_path.length - 1)
+}
+
+function persistAndReturnState(state){
+  localStorage.state = JSON.stringify({tasks: state})
+  return state
 }
