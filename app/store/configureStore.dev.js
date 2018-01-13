@@ -46,11 +46,16 @@ const configureStore = (initialState) => {
   enhancers.push(applyMiddleware(...middleware));
   const enhancer = composeEnhancers(...enhancers);
 
+  let initialStateFromLocalState = initialState;
   // restore state
-  initialState = JSON.parse(localStorage.state)
+  try {
+    initialStateFromLocalState = JSON.parse(localStorage.state);
+  } catch (e) {
+    console.error('localStorage.state is not JSON', e);
+  }
 
   // Create Store
-  const store = createStore(rootReducer, initialState, enhancer);
+  const store = createStore(rootReducer, initialStateFromLocalState, enhancer);
 
   if (module.hot) {
     module.hot.accept('../reducers', () =>
