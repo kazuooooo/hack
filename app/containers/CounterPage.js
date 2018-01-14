@@ -10,7 +10,7 @@ function mapStateToProps(state) {
 }
 
 function mapDispatchToProps(dispatch) {
-  debugger
+  debugger;
   return bindActionCreators(CounterActions, dispatch);
 }
 

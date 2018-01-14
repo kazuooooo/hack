@@ -4,11 +4,11 @@ import Paper from 'material-ui/Paper';
 
 class Timer extends Component {
   constructor(props) {
-    super(props)
+    super(props);
   }
 
   render() {
-    //TODO: css 切り出し
+    // TODO: css 切り出し
     const style = {
       height: 30,
       width: 100,
@@ -17,9 +17,9 @@ class Timer extends Component {
     };
 
     return (
-      <div style={{display: 'inline-block'}}>
-       <Paper style={style} zDepth={3}>this is paper</Paper>
-       <Paper style={style} zDepth={3}>this is paper</Paper>
+      <div style={{ display: 'inline-block' }}>
+        <Paper style={style} zDepth={3}>this is paper</Paper>
+        <Paper style={style} zDepth={3}>this is paper</Paper>
       </div>
     );
   }
