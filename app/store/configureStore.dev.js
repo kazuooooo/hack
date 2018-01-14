@@ -47,6 +47,8 @@ const configureStore = (initialState) => {
   let initialStateFromLocalState = initialState;
   // restore state
   try {
+    // tmp
+    localStorage.state = JSON.stringify([]);
     initialStateFromLocalState = JSON.parse(localStorage.state);
   } catch (e) {
     console.error('localStorage.state is not JSON', e);

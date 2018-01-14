@@ -1,18 +1,16 @@
-// @flow
 import React, { Component } from 'react';
-import Timer from './Timer';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
-import FloatingActionButton from 'material-ui/FloatingActionButton';
+import FloatingActionButton from 'material-ui/FloatingActionButton/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ContentDeleteSweep from 'material-ui/svg-icons/content/delete-sweep';
-import TextField from 'material-ui/TextField';
-import Checkbox from 'material-ui/Checkbox';
-import { List, ListItem } from 'material-ui/List';
-import Toggle from 'material-ui/Toggle';
+import TextField from 'material-ui/TextField/TextField';
+import Checkbox from 'material-ui/Checkbox/Checkbox';
+import { ListItem } from 'material-ui/List';
+import PropTypes from 'prop-types';
+
 import styles from './Task.css';
 
 class Task extends Component {
-
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -20,17 +18,15 @@ class Task extends Component {
     this.saveTask = this.saveTask.bind(this);
     this.calcMarginLeft = this.calcMarginLeft.bind(this);
     this.editTask = this.editTask.bind(this);
-    this.switchCompleteTask = this.switchCompleteTask.bind(this);
     this.deleteTask = this.deleteTask.bind(this);
+    this.switchTaskActive = this.switchTaskActive.bind(this);
     this.state = { text: props.task.text, paddingLeft: this.calcMarginLeft() };
   }
 
-  handleAddChildTask(event) {
-    const index_path = this.props.task.index_path;
-    // TODO: parent_index は不要.
-    // reducerで処理する
-    const parent_index_path = index_path.slice(0, index_path.length);
-    this.props.addTask(parent_index_path, { text: '', active: true, complete: false });
+  handleAddChildTask() {
+    const indexPath = this.props.task.indexPath;
+    const parentIndexPath = indexPath.slice(0, indexPath.length);
+    this.props.addTask(parentIndexPath, { text: '', active: true, complete: false });
     event.preventDefault();
   }
 
@@ -41,49 +37,56 @@ class Task extends Component {
 
   saveTask() {
     const params = { text: this.state.text, active: false };
-    this.props.updateTask(this.props.task.index_path, params);
+    this.props.updateTask(this.props.task.indexPath, params);
   }
 
   editTask() {
-    this.props.updateTask(this.props.task.index_path, { active: true });
+    this.props.updateTask(this.props.task.indexPath, { active: true });
   }
 
-  switchCompleteTask() {
-    this.props.updateTask(this.props.task.index_path, { complete: !this.props.task.complete });
+  switchTaskActive() {
+    this.props.updateTask(this.props.task.indexPath, { complete: !this.props.task.complete });
   }
 
   deleteTask() {
-    this.props.deleteTask(this.props.task.index_path);
+    this.props.deleteTask(this.props.task.indexPath);
   }
 
   calcMarginLeft() {
-    return this.props.task.index_path.length * 24;
+    return this.props.task.indexPath.length * 24;
   }
 
   render() {
     // TODO: css 切り出し
-    const child_tasks = [];
-    for (let i = 0; i < this.props.task.child_tasks.length; i++) {
-      const child_task = this.props.task.child_tasks[i];
-      if (child_task != null) {
-        child_tasks.push(
+    const childTasks = [];
+    for (let i = 0; i < this.props.task.childTasks.length; i += 1) {
+      const childTask = this.props.task.childTasks[i];
+      if (childTask != null) {
+        childTasks.push(
           <Task
             key={i}
             addTask={this.props.addTask}
             updateTask={this.props.updateTask}
-            switchActiveTask={this.props.switchActiveTask}
+            switchTaskActive={this.switchTaskActive}
             deleteTask={this.props.deleteTask}
-            task={child_task}
-          >
-            >
-          </Task>);
+            task={childTask}
+          />);
       }
     }
 
-    let context_dom = (
+    let contextDom = (
       <div className={styles.task} style={{ paddingLeft: `${this.state.paddingLeft}px` }}>
-        <Checkbox className={styles.checkbox} checked={this.props.task.complete} onCheck={this.switchCompleteTask} />
-        <div onClick={this.editTask} className={styles.taskText}>
+        <Checkbox
+          className={styles.checkbox}
+          checked={this.props.task.complete}
+          onCheck={this.switchTaskActive}
+        />
+        <div
+          onClick={this.editTask}
+          className={styles.taskText}
+          role="button"
+          tabIndex={0} // TODO: check
+        >
           {this.state.text}
         </div>
         <MuiThemeProvider>
@@ -107,9 +110,9 @@ class Task extends Component {
       );
 
     if (this.props.task.active) {
-      context_dom = (
+      contextDom = (
         <div className={styles.task} style={{ paddingLeft: `${this.state.paddingLeft}px` }}>
-          <label>
+          <label htmlFor="task-text-field">
             <MuiThemeProvider>
               <TextField
                 name="task"
@@ -131,11 +134,27 @@ class Task extends Component {
     return (
       <ListItem
         initiallyOpen
-        nestedItems={child_tasks}
+        nestedItems={childTasks}
       >
-        {context_dom}
+        {contextDom}
       </ListItem>
     );
   }
 }
+
+Task.propTypes = {
+  addTask: PropTypes.func.isRequired,
+  updateTask: PropTypes.func.isRequired,
+  deleteTask: PropTypes.func.isRequired,
+  task: PropTypes.shape({
+    text: PropTypes.string,
+    indexPath: PropTypes.arrayOf(PropTypes.number),
+    active: PropTypes.bool,
+    complete: PropTypes.bool,
+    childTasks: PropTypes.array
+  })
+};
+Task.defaultProps = {
+  task: []
+};
 export default Task;

@@ -1,11 +1,7 @@
-// @flow
 import React, { Component } from 'react';
-import Paper from 'material-ui/Paper';
+import Paper from 'material-ui/Paper/Paper';
 
 class Timer extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     // TODO: css 切り出し
