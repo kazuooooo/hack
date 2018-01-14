@@ -1,17 +1,16 @@
 // http://www.material-ui.com/
 import React, { Component } from 'react';
-import Task from './Task';
+import PropTypes from 'prop-types';
+import { List } from 'material-ui/List';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
-import { MuiThemeProvider, createMuiTheme } from 'material-ui/styles'; import ContentAdd from 'material-ui/svg-icons/content/add';
-import getMuiTheme from 'material-ui/styles/getMuiTheme';
-import darkBaseTheme from 'material-ui/styles/baseThemes/darkBaseTheme';
-import TextField from 'material-ui/TextField';
-import { List, ListItem } from 'material-ui/List';
+import { MuiThemeProvider } from 'material-ui/styles';
+import ContentAdd from 'material-ui/svg-icons/content/add';
 import styles from './Tasks.css';
-import ContentDrafts from 'material-ui/svg-icons/content/drafts';
+
+
+import Task from './Task';
 
 class Tasks extends Component {
-
   constructor(props) {
     super(props);
     this.state = { text: '' };
@@ -28,14 +27,22 @@ class Tasks extends Component {
     this.setState({ text: event.target.value });
   }
 
-  handleAddRootTask(event) {
-    this.props.addTask(null, { text: '', active: true, complete: false }); // TODO: extract as task default
+  handleAddRootTask() {
+    this.props.addTask(
+      null,
+      {
+        text: '',
+        active: true,
+        complete: false
+      }
+    );
   }
 
   render() {
     const tasks = [];
-    for (let i = 0; i < this.props.tasks.child_tasks.length; i++) {
-      const task = this.props.tasks.child_tasks[i];
+    const rootTasks = this.props.tasks.childTasks;
+    for (let i = 0; i < rootTasks.length; i += 1) {
+      const task = rootTasks[i];
       if (task != null) {
         tasks.push(
           <Task
@@ -47,11 +54,10 @@ class Tasks extends Component {
           />);
       }
     }
-
     return (
       <div>
         <MuiThemeProvider>
-          <List className={Tasks.taskWrapper}>
+          <List className={styles.taskWrapper}>
             {tasks}
           </List>
         </MuiThemeProvider>
@@ -67,4 +73,11 @@ class Tasks extends Component {
     );
   }
 }
+Tasks.propTypes = {
+  addTask: PropTypes.func.isRequired,
+  updateTask: PropTypes.func.isRequired,
+  deleteTask: PropTypes.func.isRequired,
+  tasks: PropTypes.object.isRequired
+};
+
 export default Tasks;
