@@ -31,10 +31,12 @@ export default function tasks(tasksState = { childTasks: [] }, action) {
       return persistAndReturnState(Object.assign({}, tasksState));
     }
     case START_TASK: {
-      return tasksState;
+      updateTask(tasksState, action.indexPath, action.startTime);
+      return persistAndReturnState(Object.assign({}, tasksState));
     }
     case END_TASK: {
-      return tasksState;
+      updateTask(tasksState, action.indexPath, action.endTime);
+      return persistAndReturnState(Object.assign({}, tasksState));
     }
     default:
       return tasksState;

@@ -5,12 +5,31 @@ import ContentAdd from 'material-ui/svg-icons/content/add';
 import ContentDeleteSweep from 'material-ui/svg-icons/content/delete-sweep';
 import TextField from 'material-ui/TextField/TextField';
 import Checkbox from 'material-ui/Checkbox/Checkbox';
-import { ListItem } from 'material-ui/List';
 import PropTypes from 'prop-types';
+
+import TimeMeasurable from './task_decorators/TimeMeasurable';
+import Octcatable from './task_decorators/Octcatable';
 
 import styles from './Task.css';
 
 class Task extends Component {
+  static propTypes = {
+    addTask: PropTypes.func.isRequired,
+    updateTask: PropTypes.func.isRequired,
+    deleteTask: PropTypes.func.isRequired,
+    task: PropTypes.shape({
+      text: PropTypes.string,
+      indexPath: PropTypes.arrayOf(PropTypes.number),
+      active: PropTypes.bool,
+      complete: PropTypes.bool,
+      childTasks: PropTypes.array
+    })
+  };
+
+  static defaultProps = {
+    task: []
+  }
+
   constructor(props) {
     super(props);
     this.handleChange = this.handleChange.bind(this);
@@ -57,23 +76,6 @@ class Task extends Component {
   }
 
   render() {
-    // TODO: css 切り出し
-    const childTasks = [];
-    for (let i = 0; i < this.props.task.childTasks.length; i += 1) {
-      const childTask = this.props.task.childTasks[i];
-      if (childTask != null) {
-        childTasks.push(
-          <Task
-            key={i}
-            addTask={this.props.addTask}
-            updateTask={this.props.updateTask}
-            switchTaskActive={this.switchTaskActive}
-            deleteTask={this.props.deleteTask}
-            task={childTask}
-          />);
-      }
-    }
-
     let contextDom = (
       <div className={styles.task} style={{ paddingLeft: `${this.state.paddingLeft}px` }}>
         <Checkbox
@@ -130,31 +132,13 @@ class Task extends Component {
       );
     }
 
-
     return (
-      <ListItem
-        initiallyOpen
-        nestedItems={childTasks}
-      >
-        {contextDom}
-      </ListItem>
+      <div>
+        { contextDom }
+      </div>
     );
   }
 }
-
-Task.propTypes = {
-  addTask: PropTypes.func.isRequired,
-  updateTask: PropTypes.func.isRequired,
-  deleteTask: PropTypes.func.isRequired,
-  task: PropTypes.shape({
-    text: PropTypes.string,
-    indexPath: PropTypes.arrayOf(PropTypes.number),
-    active: PropTypes.bool,
-    complete: PropTypes.bool,
-    childTasks: PropTypes.array
-  })
-};
-Task.defaultProps = {
-  task: []
-};
-export default Task;
+// TODO: control decoration with setting
+export default Octcatable(TimeMeasurable(Task));
+// export default TimeMeasurable(Task);

@@ -13,15 +13,19 @@ export function addTask(parentIndexPath, taskObject) {
   };
 }
 
-export function startTask() {
+export function startTask(indexPath, startTime) {
   return {
-    type: START_TASK
+    type: START_TASK,
+    indexPath,
+    startTime
   };
 }
 
-export function endTask() {
+export function endTask(indexPath, endTime) {
   return {
-    type: END_TASK
+    type: END_TASK,
+    indexPath,
+    endTime
   };
 }
 

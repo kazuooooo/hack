@@ -5,10 +5,10 @@ import { List } from 'material-ui/List';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import { MuiThemeProvider } from 'material-ui/styles';
 import ContentAdd from 'material-ui/svg-icons/content/add';
+import Clock from 'react-live-clock';
+
 import styles from './Tasks.css';
-
-
-import Task from './Task';
+import TaskContainer from './TaskContainer';
 
 class Tasks extends Component {
   constructor(props) {
@@ -41,21 +41,27 @@ class Tasks extends Component {
   render() {
     const tasks = [];
     const rootTasks = this.props.tasks.childTasks;
+
     for (let i = 0; i < rootTasks.length; i += 1) {
       const task = rootTasks[i];
+
       if (task != null) {
+        const taskParams = {
+          key: i,
+          addTask: this.props.addTask,
+          updateTask: this.props.updateTask,
+          deleteTask: this.props.deleteTask,
+          task
+        };
         tasks.push(
-          <Task
-            key={i}
-            addTask={this.props.addTask}
-            updateTask={this.props.updateTask}
-            deleteTask={this.props.deleteTask}
-            task={task}
-          />);
+          <TaskContainer {...taskParams} />
+        )
       }
     }
+
     return (
       <div>
+        <Clock format={'HH:mm:ss'} ticking timezone={'Asia/Tokyo'} />
         <MuiThemeProvider>
           <List className={styles.taskWrapper}>
             {tasks}
