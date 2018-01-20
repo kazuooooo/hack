@@ -7,7 +7,7 @@ import rootReducer from '../reducers';
 
 const history = createHashHistory();
 
-const configureStore = (initialState) => {
+const configureStore = (_) => {
   // Redux Configuration
   const middleware = [];
   const enhancers = [];
@@ -44,15 +44,8 @@ const configureStore = (initialState) => {
   enhancers.push(applyMiddleware(...middleware));
   const enhancer = composeEnhancers(...enhancers);
 
-  let initialStateFromLocalState = initialState;
   // restore state
-  try {
-    // tmp
-    // localStorage.state = JSON.stringify([]);
-    initialStateFromLocalState = JSON.parse(localStorage.state);
-  } catch (e) {
-    console.error('localStorage.state is not JSON', e);
-  }
+  const initialStateFromLocalState = JSON.parse(localStorage.state || []);
 
   // Create Store
   const store = createStore(rootReducer, initialStateFromLocalState, enhancer);
