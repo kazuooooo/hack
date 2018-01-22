@@ -1,16 +1,16 @@
 // http://www.material-ui.com/
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { List } from 'material-ui/List';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import { MuiThemeProvider } from 'material-ui/styles';
 import ContentAdd from 'material-ui/svg-icons/content/add';
-import Clock from 'react-live-clock';
-
+import SortableTree from 'react-sortable-tree';
 import styles from './Tasks.css';
-import TaskContainer from './TaskContainer';
+import Task from '../components/Task';
+
 
 class Tasks extends Component {
+
   constructor(props) {
     super(props);
     this.state = { text: '' };
@@ -18,54 +18,49 @@ class Tasks extends Component {
     this.handleAddRootTask = this.handleAddRootTask.bind(this);
   }
 
-  // handleSubmit(){
-  //   this.props.addTask(this.state.text)
-  //   event.preventDefault();
-  // }
-
   handleChange(event) {
     this.setState({ text: event.target.value });
   }
 
+  // TOOD: この処理は切り出せる
+  // presentation component
   handleAddRootTask() {
     this.props.addTask(
       null,
       {
-        text: '',
+        title: '',
         active: true,
-        complete: false
+        complete: false,
+        expanded: true,
+        children: []
       }
     );
   }
 
   render() {
-    const tasks = [];
-    const rootTasks = this.props.tasks.childTasks;
-
-    for (let i = 0; i < rootTasks.length; i += 1) {
-      const task = rootTasks[i];
-
-      if (task != null) {
-        const taskParams = {
-          key: i,
-          addTask: this.props.addTask,
-          updateTask: this.props.updateTask,
-          deleteTask: this.props.deleteTask,
-          task
-        };
-        tasks.push(
-          <TaskContainer {...taskParams} />
-        )
-      }
-    }
-
     return (
       <div>
-        <Clock format={'HH:mm:ss'} ticking timezone={'Asia/Tokyo'} />
         <MuiThemeProvider>
-          <List className={styles.taskWrapper}>
-            {tasks}
-          </List>
+          <div style={{ height: '1000' }}>
+            <SortableTree
+              treeData={this.props.tasks.treeData}
+              onChange={newState => this.props.updateTasksState(newState)}
+              nodeContentRenderer={Task}
+              generateNodeProps={(callbackParams) => {
+                console.log('callbackParams: ', this.props);
+                return {
+                  clickButtonFunction: (a) => {
+                    console.log('clicked' , a)
+                  },
+                  actions: {
+                    addTask: this.props.addTask,
+                    deleteTask: this.props.deleteTask,
+                    updateTask: this.props.updateTask
+                  }
+                }
+              }}
+            />
+          </div>
         </MuiThemeProvider>
         <MuiThemeProvider>
           <FloatingActionButton
@@ -83,6 +78,7 @@ Tasks.propTypes = {
   addTask: PropTypes.func.isRequired,
   updateTask: PropTypes.func.isRequired,
   deleteTask: PropTypes.func.isRequired,
+  updateTasksState: PropTypes.func.isRequired,
   tasks: PropTypes.object.isRequired
 };
 

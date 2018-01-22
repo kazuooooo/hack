@@ -13,7 +13,7 @@ class TaskContainer extends Component {
       indexPath: PropTypes.arrayOf(PropTypes.number),
       active: PropTypes.bool,
       complete: PropTypes.bool,
-      childTasks: PropTypes.array
+      children: PropTypes.array
     })
   };
 
@@ -23,11 +23,11 @@ class TaskContainer extends Component {
 
   render() {
     // TODO: css 切り出し
-    const childTasks = [];
-    for (let i = 0; i < this.props.task.childTasks.length; i += 1) {
-      const childTask = this.props.task.childTasks[i];
+    const children = [];
+    for (let i = 0; i < this.props.task.children.length; i += 1) {
+      const childTask = this.props.task.children[i];
       if (childTask != null) {
-        childTasks.push(
+        children.push(
           <TaskContainer
             key={i}
             addTask={this.props.addTask}
@@ -42,7 +42,7 @@ class TaskContainer extends Component {
     return (
       <ListItem
         initiallyOpen
-        nestedItems={childTasks}
+        nestedItems={children}
       >
         <Task {...this.props} />
       </ListItem>

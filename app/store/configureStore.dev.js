@@ -45,7 +45,8 @@ const configureStore = (_) => {
   const enhancer = composeEnhancers(...enhancers);
 
   // restore state
-  const initialStateFromLocalState = JSON.parse(localStorage.state || []);
+  // const initialStateFromLocalState = JSON.parse('""');
+  const initialStateFromLocalState = JSON.parse(localStorage.state || '""');
 
   // Create Store
   const store = createStore(rootReducer, initialStateFromLocalState, enhancer);
