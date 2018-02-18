@@ -4,11 +4,12 @@ export const END_TASK = 'END_TASK';
 export const UPDATE_TASK = 'UPDATE_TASK';
 export const EDIT_TASK = 'EDIT_TASK';
 export const DELETE_TASK = 'DELETE_TASK';
+export const UPDATE_TASKS_STATE = 'UPDATE_TASKS_STATE';
 
-export function addTask(parentIndexPath, taskObject) {
+export function addTask(parentNode, taskObject) {
   return {
     type: ADD_TASK,
-    parentIndexPath,
+    parentNode,
     taskObject
   };
 }
@@ -29,17 +30,25 @@ export function endTask(indexPath, endTime) {
   };
 }
 
-export function updateTask(indexPath, params) {
+export function updateTask(node, path, params) {
   return {
     type: UPDATE_TASK,
-    indexPath,
+    node,
+    path,
     params
   };
 }
 
-export function deleteTask(indexPath) {
+export function updateTasksState(newState) {
+  return {
+    type: UPDATE_TASKS_STATE,
+    newState
+  };
+}
+
+export function deleteTask(path) {
   return {
     type: DELETE_TASK,
-    indexPath
+    path
   };
 }
