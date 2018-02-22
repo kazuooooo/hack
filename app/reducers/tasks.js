@@ -1,6 +1,6 @@
-import { ADD_TASK, START_TASK, END_TASK, UPDATE_TASK, DELETE_TASK, UPDATE_TASKS_STATE} from '../actions/tasks';
-import { addNodeUnderParent, removeNode, changeNodeAtPath } from '../components/vendor/tree-data-utils';
-import { defaultGetNodeKey } from '../components/vendor/default-handlers';
+import {ADD_TASK, START_TASK, END_TASK, UPDATE_TASK, DELETE_TASK, UPDATE_TASKS_STATE} from '../actions/tasks';
+import {addNodeUnderParent, removeNode, changeNodeAtPath, walk} from '../components/vendor/tree-data-utils';
+import {defaultGetNodeKey} from '../components/vendor/default-handlers';
 
 export default function tasks(tasksState = [], action) {
   switch (action.type) {
@@ -14,16 +14,21 @@ export default function tasks(tasksState = [], action) {
       return persistAndReturnState(Object.assign({}, newState));
     }
     case UPDATE_TASK: {
-      const newNode = Object.assign(action.node, action.params)
-      const newState = changeNodeAtPath(
+      let newState;
+      if (action.params.active) {
+        newState = deactiveAllTasks(tasksState, action.path);
+      };
+
+      const newNode = Object.assign(action.node, action.params);
+      newState = changeNodeAtPath(
         {
           treeData: tasksState.treeData,
           path: action.path,
           newNode,
           getNodeKey: defaultGetNodeKey
         }
-      )
-      return persistAndReturnState(Object.assign({}, { treeData: newState }));
+      );
+      return persistAndReturnState(Object.assign({}, {treeData: newState}));
     }
     case DELETE_TASK: {
       const newState = removeNode({
@@ -42,7 +47,7 @@ export default function tasks(tasksState = [], action) {
       return persistAndReturnState(Object.assign({}, tasksState));
     }
     case UPDATE_TASKS_STATE: {
-      return persistAndReturnState(Object.assign({}, { treeData: action.newState }));
+      return persistAndReturnState(Object.assign({}, {treeData: action.newState}));
     }
     default:
       return tasksState;
@@ -60,6 +65,28 @@ function getTask(tasksState, indexPath) {
 }
 
 function persistAndReturnState(state) {
-  localStorage.state = JSON.stringify({ tasks: state });
+  localStorage.state = JSON.stringify({tasks: state});
   return state;
+}
+
+function deactiveAllTasks(tasksState, path) {
+  let newState;
+  walk({
+    treeData: tasksState.treeData,
+    getNodeKey: defaultGetNodeKey,
+    callback: (node) => {
+      if(node.node.active) {
+        const deactiveNode = Object.assign(node.node, { active: false });
+        newState = changeNodeAtPath(
+          {
+            treeData: tasksState.treeData,
+            path: path,
+            deactiveNode,
+            getNodeKey: defaultGetNodeKey
+          }
+        );
+      }
+    }
+  })
+  return newState;
 }

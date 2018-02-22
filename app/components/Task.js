@@ -101,11 +101,20 @@ class Task extends Component {
           name={nodeTitle}
           value={nodeTitle}
           onChange={(e) => {
-            this.props.actions.updateTask(this.props.node, this.props.path, { title: e.target.value });
+            this.props.actions.updateTask(
+              this.props.node, this.props.path, { title: e.target.value }
+            );
           }}
           onKeyPress={(ev) => {
-              if (ev.key === 'Enter') {
-                this.props.actions.updateTask(this.props.node, this.props.path, {active: false});
+              if(ev.key === 'Enter') {
+                if(ev.target.value){
+                  this.props.actions.updateTask(
+                    this.props.node, this.props.path, { active: false }
+                  );
+                } else {
+                  // delete if text is empty
+                  this.props.actions.deleteTask(this.props.path)
+                }
               }
             }
           }
