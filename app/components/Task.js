@@ -4,10 +4,11 @@ import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FloatingActionButton from 'material-ui/FloatingActionButton/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ContentDeleteSweep from 'material-ui/svg-icons/content/delete-sweep';
-import { getIEVersion } from './vendor/browser-utils';
+import {getIEVersion} from './vendor/browser-utils';
 import baseStyles from './node-renderer-default.scss';
-import { isDescendant } from './vendor/tree-data-utils';
+import {isDescendant} from './vendor/tree-data-utils';
 import TextField from 'material-ui/TextField/TextField';
+import Checkbox from 'material-ui/Checkbox/Checkbox'
 
 let styles = baseStyles;
 // Add extra classes in browsers that don't support flex
@@ -94,7 +95,7 @@ class Task extends Component {
 
     // task context
     let taskDom;
-    if(this.props.node.active) {
+    if (this.props.node.active) {
       // active text field
       taskDom = (
         <TextField
@@ -102,33 +103,45 @@ class Task extends Component {
           value={nodeTitle}
           onChange={(e) => {
             this.props.actions.updateTask(
-              this.props.node, this.props.path, { title: e.target.value }
+              this.props.node, this.props.path, {title: e.target.value}
             );
           }}
           onKeyPress={(ev) => {
-              if(ev.key === 'Enter') {
-                if(ev.target.value){
-                  this.props.actions.updateTask(
-                    this.props.node, this.props.path, { active: false }
-                  );
-                } else {
-                  // delete if text is empty
-                  this.props.actions.deleteTask(this.props.path)
-                }
+            if (ev.key === 'Enter') {
+              if (ev.target.value) {
+                this.props.actions.updateTask(
+                  this.props.node, this.props.path, {active: false}
+                );
+              } else {
+                // delete if text is empty
+                this.props.actions.deleteTask(this.props.path);
               }
             }
+          }
           }
         />
       )
     } else {
       // span
       taskDom = (
-        <div className={styles.rowLabel}>
+        <div style={ {display: 'flex'} }>
+          <Checkbox
+            style={ {display: 'inline-block', width: '30px'} }
+            checked={node.complete}
+            onCheck={(_, checked) => {
+              this.props.actions.updateTask(this.props.node, this.props.path, {complete: checked});
+            }
+            }
+          />
+          <div className={styles.rowLabel}>
                   <span
                     className={
                       styles.rowTitle +
-                      (node.subtitle ? ` ${styles.rowTitleWithSubtitle}` : '')
+                      (node.complete ? ` ${styles.rowTitleCompleted}` : '')
                     }
+                    onClick={() => {
+                      this.props.actions.updateTask(this.props.node, this.props.path, { active: true });
+                    }}
                   >
                     {typeof nodeTitle === 'function'
                       ? nodeTitle({
@@ -139,8 +152,8 @@ class Task extends Component {
                       : nodeTitle}
                   </span>
 
-          {nodeSubtitle && (
-            <span className={styles.rowSubtitle}>
+            {nodeSubtitle && (
+              <span className={styles.rowSubtitle}>
                       {typeof nodeSubtitle === 'function'
                         ? nodeSubtitle({
                           node,
@@ -149,7 +162,8 @@ class Task extends Component {
                         })
                         : nodeSubtitle}
                     </span>
-          )}
+            )}
+          </div>
         </div>
       )
     }
@@ -213,7 +227,6 @@ class Task extends Component {
                   styles.rowContents +
                   (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')
                 }
-                onClick={() => { this.props.actions.updateTask(this.props.node, this.props.path, { active: true }); }}
               >
                 {taskDom}
                 <div className={styles.rowToolbar}>
