@@ -190,6 +190,13 @@ $row-padding: 10px;
 
 .rowTitle {
   font-weight: bold;
+  display: inline-block;
+}
+
+.rowTitleCompleted {
+  display: inline-block;
+  color: lightgray;
+  font-weight: normal;
 }
 
 .rowTitleWithSubtitle {
@@ -296,4 +303,8 @@ $row-padding: 10px;
     bottom: 0;
     height: $row-padding;
   }
+}
+
+.taskCheckBox {
+  display: inline-block;
 }
