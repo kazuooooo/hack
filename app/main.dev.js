@@ -27,11 +27,7 @@ const installExtensions = async () => {
   ];
 
   return Promise
-    .all(
-      extensions.map(
-        name => electronDevToolsInstaller.default(electronDevToolsInstaller[name], forceDownload)
-      )
-    )
+    .all(extensions.map(name => electronDevToolsInstaller.default(electronDevToolsInstaller[name], forceDownload)))
     .catch(console.log);
 };
 

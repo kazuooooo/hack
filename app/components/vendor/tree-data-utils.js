@@ -106,12 +106,12 @@ function walkDescendants({
   const selfInfo = isPseudoRoot
     ? null
     : {
-        node,
-        parentNode,
-        path: selfPath,
-        lowerSiblingCounts,
-        treeIndex: currentIndex,
-      };
+      node,
+      parentNode,
+      path: selfPath,
+      lowerSiblingCounts,
+      treeIndex: currentIndex,
+    };
 
   if (!isPseudoRoot) {
     const callbackResult = callback(selfInfo);
@@ -699,9 +699,9 @@ function addNodeAtDepthAndIndex({
   path = [],
 }) {
   const selfPath = n =>
-    isPseudoRoot
+    (isPseudoRoot
       ? []
-      : [...path, getNodeKey({ node: n, treeIndex: currentIndex })];
+      : [...path, getNodeKey({ node: n, treeIndex: currentIndex })]);
 
   // If the current position is the only possible place to add, add it
   if (
@@ -1020,9 +1020,7 @@ export function isDescendant(older, younger) {
   return (
     !!older.children &&
     typeof older.children !== 'function' &&
-    older.children.some(
-      child => child === younger || isDescendant(child, younger)
-    )
+    older.children.some(child => child === younger || isDescendant(child, younger))
   );
 }
 
@@ -1076,7 +1074,9 @@ export function find({
   expandFocusMatchPaths = true,
 }) {
   let matchCount = 0;
-  const trav = ({ isPseudoRoot = false, node, currentIndex, path = [] }) => {
+  const trav = ({
+    isPseudoRoot = false, node, currentIndex, path = []
+  }) => {
     let matches = [];
     let isSelfMatch = false;
     let hasFocusMatch = false;
@@ -1087,9 +1087,9 @@ export function find({
     const extraInfo = isPseudoRoot
       ? null
       : {
-          path: selfPath,
-          treeIndex: currentIndex,
-        };
+        path: selfPath,
+        treeIndex: currentIndex,
+      };
 
     // Nodes with with children that aren't lazy
     const hasChildren =

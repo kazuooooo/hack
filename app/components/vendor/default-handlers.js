@@ -43,7 +43,9 @@ function stringSearch(key, searchQuery, node, path, treeIndex) {
   return node[key] && String(node[key]).indexOf(searchQuery) > -1;
 }
 
-export function defaultSearchMethod({ node, path, treeIndex, searchQuery }) {
+export function defaultSearchMethod({
+  node, path, treeIndex, searchQuery
+}) {
   return (
     stringSearch('title', searchQuery, node, path, treeIndex) ||
     stringSearch('subtitle', searchQuery, node, path, treeIndex)
