@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import Paper from 'material-ui/Paper/Paper';
 
 class Timer extends Component {
-
   render() {
     // TODO: css 切り出し
     const style = {

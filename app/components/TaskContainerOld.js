@@ -27,15 +27,14 @@ class TaskContainer extends Component {
     for (let i = 0; i < this.props.task.children.length; i += 1) {
       const childTask = this.props.task.children[i];
       if (childTask != null) {
-        children.push(
-          <TaskContainer
-            key={i}
-            addTask={this.props.addTask}
-            updateTask={this.props.updateTask}
-            switchTaskActive={this.switchTaskActive}
-            deleteTask={this.props.deleteTask}
-            task={childTask}
-          />);
+        children.push(<TaskContainer
+          key={i}
+          addTask={this.props.addTask}
+          updateTask={this.props.updateTask}
+          switchTaskActive={this.switchTaskActive}
+          deleteTask={this.props.deleteTask}
+          task={childTask}
+        />);
       }
     }
 
