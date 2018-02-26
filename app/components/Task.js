@@ -65,7 +65,6 @@ class Task extends Component {
 
     console.log('inside new task', this.props)
 
-    this.props.clickButtonFunction(this);
     const nodeTitle = title || node.title;
     const nodeSubtitle = subtitle || node.subtitle;
 
