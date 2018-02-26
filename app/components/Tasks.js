@@ -10,7 +10,6 @@ import Task from '../components/Task';
 
 
 class Tasks extends Component {
-
   constructor(props) {
     super(props);
     this.state = { text: '' };
@@ -41,7 +40,7 @@ class Tasks extends Component {
     return (
       <div>
         <MuiThemeProvider>
-          <div style={{ height: '1000' }}>
+          <div style={{ height: 1000 }}>
             <SortableTree
               treeData={this.props.tasks.treeData}
               onChange={newState => this.props.updateTasksState(newState)}
@@ -50,14 +49,14 @@ class Tasks extends Component {
                 console.log('callbackParams: ', this.props);
                 return {
                   clickButtonFunction: (a) => {
-                    console.log('clicked' , a)
+                    console.log('clicked', a);
                   },
                   actions: {
                     addTask: this.props.addTask,
                     deleteTask: this.props.deleteTask,
                     updateTask: this.props.updateTask
                   }
-                }
+                };
               }}
             />
           </div>
