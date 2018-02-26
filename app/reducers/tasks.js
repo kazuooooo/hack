@@ -15,9 +15,12 @@ export default function tasks(tasksState = [], action) {
     }
     case UPDATE_TASK: {
       let newState;
-      if (action.params.active) {
-        newState = deactiveAllTasks(tasksState, action.path);
-      };
+
+      // FIXME: If deactive task title is changed, title is not saved to state,
+      //        because input text is hold as task component state for performance
+      // if (action.params.active) {
+      //   newState = deactiveAllTasks(tasksState, action.path);
+      // };
 
       const newNode = Object.assign(action.node, action.params);
       newState = changeNodeAtPath(
@@ -76,6 +79,7 @@ function deactiveAllTasks(tasksState, path) {
     getNodeKey: defaultGetNodeKey,
     callback: (node) => {
       if(node.node.active) {
+        debugger
         const deactiveNode = Object.assign(node.node, { active: false });
         newState = changeNodeAtPath(
           {
