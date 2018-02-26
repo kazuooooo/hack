@@ -24,6 +24,13 @@ if (getIEVersion < 10) {
 
 class Task extends Component {
 
+  constructor(props) {
+    super(props);
+    // HACK: Use state for input text for performaance
+    //       (redux state crazy slow because of render on every character change)
+    this.state = { inputText: props.node.title };
+  }
+
   render() {
     const {
       scaffoldBlockPxWidth,
@@ -100,15 +107,14 @@ class Task extends Component {
       taskDom = (
         <TextField
           name={nodeTitle}
-          value={nodeTitle}
-          onChange={(e) => {
-            this.props.actions.updateTask(
-              this.props.node, this.props.path, {title: e.target.value}
-            );
+          value={this.state.inputText}
+          onChange={(event) => {
+            this.setState({ inputText: event.target.value });
           }}
           onKeyPress={(ev) => {
             if (ev.key === 'Enter') {
               if (ev.target.value) {
+                this.props.node.title = ev.target.value
                 this.props.actions.updateTask(
                   this.props.node, this.props.path, {active: false}
                 );
