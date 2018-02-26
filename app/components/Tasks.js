@@ -40,7 +40,7 @@ class Tasks extends Component {
     return (
       <div>
         <MuiThemeProvider>
-          <div style={{ height: '1000' }}>
+          <div style={{ height: 1000 }}>
             <SortableTree
               treeData={this.props.tasks.treeData}
               onChange={newState => this.props.updateTasksState(newState)}
