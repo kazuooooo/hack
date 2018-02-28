@@ -9,6 +9,7 @@ import baseStyles from './node-renderer-default.scss';
 import {isDescendant} from './vendor/tree-data-utils';
 import TextField from 'material-ui/TextField/TextField';
 import Checkbox from 'material-ui/Checkbox/Checkbox'
+import Timer from '../components/Timer'
 
 let styles = baseStyles;
 // Add extra classes in browsers that don't support flex
@@ -274,6 +275,15 @@ class Task extends Component {
                   <ContentDeleteSweep />
                 </FloatingActionButton>
               </MuiThemeProvider>
+              <Timer
+                onStart={(time) => {
+                  this.props.actions.updateTask(this.props.node, this.props.path, { start_time: time, is_time_measuring: true });
+                }}
+                onStop={(time) => {
+                  this.props.actions.updateTask(this.props.node, this.props.path, { end_time: time, is_time_measuring: false });
+                }}
+                is_time_measuring={this.props.node.is_time_measuring}
+              />
             </div>
           )}
 

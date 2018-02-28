@@ -8,7 +8,6 @@ import SortableTree from 'react-sortable-tree';
 import styles from './Tasks.css';
 import Task from '../components/Task';
 
-
 class Tasks extends Component {
 
   constructor(props) {
@@ -41,7 +40,7 @@ class Tasks extends Component {
     return (
       <div>
         <MuiThemeProvider>
-          <div style={{ height: '1000' }}>
+          <div style={{ height: 1000 }}>
             <SortableTree
               treeData={this.props.tasks.treeData}
               onChange={newState => this.props.updateTasksState(newState)}
