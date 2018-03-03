@@ -86,7 +86,7 @@ class Task extends Component<Props, State> {
     super(props);
     // HACK: Use state for input text for performaance
     //       (redux state crazy slow because of render on every character change)
-    this.state = { inputText: props.node.title };
+    this.state = { inputText: '' };
     this.saveInputText = this.saveInputText.bind(this);
   }
 
@@ -173,7 +173,11 @@ class Task extends Component<Props, State> {
     if (this.props.node.active) {
       // active text field
       taskDom = (
+        // hintText need to avoid warning
+        // refer this https://github.com/mui-org/material-ui/issues/4659
         <TextField
+          id={this._reactInternalInstance._rootNodeID}
+          hintText="type task"
           name={nodeTitle}
           value={this.state.inputText}
           onChange={(event) => {
