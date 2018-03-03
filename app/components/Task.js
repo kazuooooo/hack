@@ -86,6 +86,17 @@ class Task extends Component<Props, State> {
     // HACK: Use state for input text for performaance
     //       (redux state crazy slow because of render on every character change)
     this.state = { inputText: props.node.title };
+    this.saveInputText = this.saveInputText.bind(this);
+  }
+
+  saveInputText(ev: Object) {
+    if (ev.target.value) {
+      this.props.node.title = ev.target.value;
+      this.props.actions.updateTask(this.props.node, this.props.path, { active: false });
+    } else {
+      // delete if text is empty
+      this.props.actions.deleteTask(this.props.path);
+    }
   }
 
   render() {
@@ -167,15 +178,12 @@ class Task extends Component<Props, State> {
           onChange={(event) => {
             this.setState({ inputText: event.target.value });
           }}
+          onBlur={(ev) => {
+            this.saveInputText(ev)
+          }}
           onKeyPress={(ev) => {
             if (ev.key === 'Enter') {
-              if (ev.target.value) {
-                this.props.node.title = ev.target.value;
-                this.props.actions.updateTask(this.props.node, this.props.path, { active: false });
-              } else {
-                // delete if text is empty
-                this.props.actions.deleteTask(this.props.path);
-              }
+              this.saveInputText(ev)
             }
           }
           }
@@ -194,7 +202,7 @@ class Task extends Component<Props, State> {
             }
           />
           <div className={styles.rowLabel}>
-            <button
+            <span
               className={
                       styles.rowTitle +
                       (node.complete ? ` ${styles.rowTitleCompleted}` : '')
@@ -210,7 +218,7 @@ class Task extends Component<Props, State> {
                         treeIndex,
                       })
                       : nodeTitle}
-            </button>
+            </span>
 
             {nodeSubtitle && (
               <span className={styles.rowSubtitle}>
