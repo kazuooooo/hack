@@ -1,16 +1,16 @@
 // @flow
-import React, {Component, type Node} from 'react';
+import React, { Component, type Node } from 'react';
 // import PropTypes from 'prop-types';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import FloatingActionButton from 'material-ui/FloatingActionButton/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ContentDeleteSweep from 'material-ui/svg-icons/content/delete-sweep';
 import TextField from 'material-ui/TextField/TextField';
-import Timer from '../components/Timer'
+import Timer from '../components/Timer';
 import Checkbox from 'material-ui/Checkbox/Checkbox';
-import {getIEVersion} from './vendor/browser-utils';
+import { getIEVersion } from './vendor/browser-utils';
 import baseStyles from './node-renderer-default.scss';
-import {isDescendant} from './vendor/tree-data-utils';
+import { isDescendant } from './vendor/tree-data-utils';
 
 type NodeType = {
   children?: Node,
@@ -86,14 +86,14 @@ class Task extends Component<Props, State> {
     super(props);
     // HACK: Use state for input text for performaance
     //       (redux state crazy slow because of render on every character change)
-    this.state = {inputText: props.node.title};
+    this.state = { inputText: props.node.title };
     this.saveInputText = this.saveInputText.bind(this);
   }
 
   saveInputText(ev: Object) {
     if (ev.target.value) {
       this.props.node.title = ev.target.value;
-      this.props.actions.updateTask(this.props.node, this.props.path, {active: false});
+      this.props.actions.updateTask(this.props.node, this.props.path, { active: false });
     } else {
       // delete if text is empty
       this.props.actions.deleteTask(this.props.path);
@@ -132,7 +132,7 @@ class Task extends Component<Props, State> {
     } = this.props;
 
 
-    console.log('inside new task', this.props);
+    console.log('inside new task', this.props.node.title, this.props.lastElement);
 
     const nodeTitle = title || node.title;
     const nodeSubtitle = subtitle || node.subtitle;
@@ -145,24 +145,24 @@ class Task extends Component<Props, State> {
         handle = (
           <div className={styles.loadingHandle}>
             <div className={styles.loadingCircle}>
-              <div className={styles.loadingCirclePoint}/>
-              <div className={styles.loadingCirclePoint}/>
-              <div className={styles.loadingCirclePoint}/>
-              <div className={styles.loadingCirclePoint}/>
-              <div className={styles.loadingCirclePoint}/>
-              <div className={styles.loadingCirclePoint}/>
-              <div className={styles.loadingCirclePoint}/>
-              <div className={styles.loadingCirclePoint}/>
-              <div className={styles.loadingCirclePoint}/>
-              <div className={styles.loadingCirclePoint}/>
-              <div className={styles.loadingCirclePoint}/>
-              <div className={styles.loadingCirclePoint}/>
+              <div className={styles.loadingCirclePoint} />
+              <div className={styles.loadingCirclePoint} />
+              <div className={styles.loadingCirclePoint} />
+              <div className={styles.loadingCirclePoint} />
+              <div className={styles.loadingCirclePoint} />
+              <div className={styles.loadingCirclePoint} />
+              <div className={styles.loadingCirclePoint} />
+              <div className={styles.loadingCirclePoint} />
+              <div className={styles.loadingCirclePoint} />
+              <div className={styles.loadingCirclePoint} />
+              <div className={styles.loadingCirclePoint} />
+              <div className={styles.loadingCirclePoint} />
             </div>
           </div>
         );
       } else {
         // Show the handle used to initiate a drag-and-drop
-        handle = connectDragSource(<div className={styles.moveHandle}/>, {
+        handle = connectDragSource(<div className={styles.moveHandle} />, {
           dropEffect: 'copy',
         });
       }
@@ -177,14 +177,14 @@ class Task extends Component<Props, State> {
           name={nodeTitle}
           value={this.state.inputText}
           onChange={(event) => {
-            this.setState({inputText: event.target.value});
+            this.setState({ inputText: event.target.value });
           }}
           onBlur={(ev) => {
-            this.saveInputText(ev)
+            this.saveInputText(ev);
           }}
           onKeyPress={(ev) => {
             if (ev.key === 'Enter') {
-              this.saveInputText(ev)
+              this.saveInputText(ev);
             }
           }
           }
@@ -194,23 +194,23 @@ class Task extends Component<Props, State> {
       // span
       taskDom = (
         <div className={styles.rowLabel}>
-            <span
-              className={
+          <span
+            className={
                 styles.rowTitle +
                 (node.complete ? ` ${styles.rowTitleCompleted}` : '')
               }
-              onClick={() => {
-                this.props.actions.updateTask(this.props.node, this.props.path, {active: true});
+            onClick={() => {
+                this.props.actions.updateTask(this.props.node, this.props.path, { active: true });
               }}
-            >
-              {typeof nodeTitle === 'function'
+          >
+            {typeof nodeTitle === 'function'
                 ? nodeTitle({
                   node,
                   path,
                   treeIndex,
                 })
                 : nodeTitle}
-            </span>
+          </span>
 
           {nodeSubtitle && (
             <span className={styles.rowSubtitle}>
@@ -221,7 +221,7 @@ class Task extends Component<Props, State> {
                     treeIndex,
                   })
                   : nodeSubtitle}
-              </span>
+            </span>
           )}
         </div>
       );
@@ -230,7 +230,7 @@ class Task extends Component<Props, State> {
     const isDraggedDescendant = draggedNode && isDescendant(draggedNode, node);
     const isLandingPadActive = !didDrop && isDragging;
     return (
-      <div style={{height: '100%'}} {...otherProps}>
+      <div style={{ height: '100%' }} {...otherProps}>
         {toggleChildrenVisibility &&
         node.children &&
         (node.children.length > 0 || typeof node.children === 'function') && (
@@ -241,7 +241,7 @@ class Task extends Component<Props, State> {
               className={
                 node.expanded ? styles.collapseButton : styles.expandButton
               }
-              style={{left: -0.5 * scaffoldBlockPxWidth}}
+              style={{ left: -0.5 * scaffoldBlockPxWidth }}
               onClick={() =>
                 toggleChildrenVisibility({
                   node,
@@ -254,7 +254,7 @@ class Task extends Component<Props, State> {
             {node.expanded &&
             !isDragging && (
               <div
-                style={{width: scaffoldBlockPxWidth}}
+                style={{ width: scaffoldBlockPxWidth }}
                 className={styles.lineChildren}
               />
             )}
@@ -263,7 +263,7 @@ class Task extends Component<Props, State> {
         <div className={styles.rowWrapper}>
           {/* Set the row preview to be used during drag and drop */}
           {connectDragPreview(<div
-              className={
+            className={
                 styles.row +
                 (isLandingPadActive ? ` ${styles.rowLandingPad}` : '') +
                 (isLandingPadActive && !canDrop
@@ -273,45 +273,45 @@ class Task extends Component<Props, State> {
                 (isSearchFocus ? ` ${styles.rowSearchFocus}` : '') +
                 (className ? ` ${className}` : '')
               }
-              style={{
+            style={{
                 opacity: isDraggedDescendant ? 0.5 : 1,
                 ...style,
               }}
-            >
-              {handle}
+          >
+            {handle}
 
-              <div
-                className={
+            <div
+              className={
                   styles.rowContents +
                   (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')
                 }
-              >
-                <div style={{display: 'flex', alignItems: 'center'}}>
-                  <Checkbox
-                    style={{display: 'inline-block', width: '30px'}}
-                    checked={node.complete}
-                    onCheck={(_, checked) => {
-                      this.props.actions.updateTask(this.props.node, this.props.path, {complete: checked});
+            >
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Checkbox
+                  style={{ display: 'inline-block', width: '30px' }}
+                  checked={node.complete}
+                  onCheck={(_, checked) => {
+                      this.props.actions.updateTask(this.props.node, this.props.path, { complete: checked });
                     }
                     }
-                  />
-                  {taskDom}
-                </div>
-                <div className={styles.rowToolbar}>
-                  {buttons.map((btn, index) => (
-                    <div
-                      key={index} // eslint-disable-line react/no-array-index-key
-                      className={styles.toolbarButton}
-                    >
-                      {btn}
-                    </div>
-                  ))}
-                </div>
+                />
+                {taskDom}
               </div>
-              <MuiThemeProvider>
-                <FloatingActionButton
-                  mini
-                  onClick={() => {
+              <div className={styles.rowToolbar}>
+                {buttons.map((btn, index) => (
+                  <div
+                    key={index} // eslint-disable-line react/no-array-index-key
+                    className={styles.toolbarButton}
+                  >
+                    {btn}
+                  </div>
+                  ))}
+              </div>
+            </div>
+            <MuiThemeProvider>
+              <FloatingActionButton
+                mini
+                onClick={() => {
                     this.props.actions.addTask(
                       this.props,
                       {
@@ -324,36 +324,35 @@ class Task extends Component<Props, State> {
                     );
                   }
                   }
-                >
-                  <ContentAdd />
-                </FloatingActionButton>
-              </MuiThemeProvider>
-              <MuiThemeProvider>
-                <FloatingActionButton
-                  mini
-                  backgroundColor="#d10000"
-                  onClick={() => this.props.actions.deleteTask(this.props.path)}
-                >
-                  <ContentDeleteSweep />
-                </FloatingActionButton>
-              </MuiThemeProvider>
-              <Timer
-                onStart={(time) => {
+              >
+                <ContentAdd />
+              </FloatingActionButton>
+            </MuiThemeProvider>
+            <MuiThemeProvider>
+              <FloatingActionButton
+                mini
+                backgroundColor="#d10000"
+                onClick={() => this.props.actions.deleteTask(this.props.path)}
+              >
+                <ContentDeleteSweep />
+              </FloatingActionButton>
+            </MuiThemeProvider>
+            <Timer
+              onStart={(time) => {
                   this.props.actions.updateTask(this.props.node, this.props.path, {
                     start_time: time,
                     is_time_measuring: true
                   });
                 }}
-                onStop={(time) => {
+              onStop={(time) => {
                   this.props.actions.updateTask(this.props.node, this.props.path, {
                     end_time: time,
                     is_time_measuring: false
                   });
                 }}
-                is_time_measuring={this.props.node.is_time_measuring}
-              />
-            </div>
-          )}
+              is_time_measuring={this.props.node.is_time_measuring}
+            />
+          </div>)}
 
         </div>
       </div>
