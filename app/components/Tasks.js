@@ -8,7 +8,6 @@ import SortableTree from 'react-sortable-tree';
 import styles from './Tasks.css';
 import Task from '../components/Task';
 
-
 class Tasks extends Component {
   constructor(props) {
     super(props);
@@ -45,12 +44,8 @@ class Tasks extends Component {
               treeData={this.props.tasks.treeData}
               onChange={newState => this.props.updateTasksState(newState)}
               nodeContentRenderer={Task}
-              generateNodeProps={(callbackParams) => {
-                console.log('callbackParams: ', this.props);
+              generateNodeProps={() => {
                 return {
-                  clickButtonFunction: (a) => {
-                    console.log('clicked', a);
-                  },
                   actions: {
                     addTask: this.props.addTask,
                     deleteTask: this.props.deleteTask,

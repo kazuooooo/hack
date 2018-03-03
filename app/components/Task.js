@@ -6,6 +6,7 @@ import FloatingActionButton from 'material-ui/FloatingActionButton/FloatingActio
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ContentDeleteSweep from 'material-ui/svg-icons/content/delete-sweep';
 import TextField from 'material-ui/TextField/TextField';
+import Timer from '../components/Timer'
 import Checkbox from 'material-ui/Checkbox/Checkbox';
 import { getIEVersion } from './vendor/browser-utils';
 import baseStyles from './node-renderer-default.scss';
@@ -122,7 +123,6 @@ class Task extends Component<Props, State> {
 
     console.log('inside new task', this.props);
 
-    this.props.clickButtonFunction(this);
     const nodeTitle = title || node.title;
     const nodeSubtitle = subtitle || node.subtitle;
 
@@ -316,20 +316,30 @@ class Task extends Component<Props, State> {
                     );
                   }
                   }
-              >
-                <ContentAdd />
-              </FloatingActionButton>
-            </MuiThemeProvider>
-            <MuiThemeProvider>
-              <FloatingActionButton
-                mini
-                backgroundColor="#d10000"
-                onClick={() => this.props.actions.deleteTask(this.props.path)}
-              >
-                <ContentDeleteSweep />
-              </FloatingActionButton>
-            </MuiThemeProvider>
-                              </div>)}
+                >
+                  <ContentAdd />
+                </FloatingActionButton>
+              </MuiThemeProvider>
+              <MuiThemeProvider>
+                <FloatingActionButton
+                  mini
+                  backgroundColor="#d10000"
+                  onClick={() => this.props.actions.deleteTask(this.props.path)}
+                >
+                  <ContentDeleteSweep />
+                </FloatingActionButton>
+              </MuiThemeProvider>
+              <Timer
+                onStart={(time) => {
+                  this.props.actions.updateTask(this.props.node, this.props.path, { start_time: time, is_time_measuring: true });
+                }}
+                onStop={(time) => {
+                  this.props.actions.updateTask(this.props.node, this.props.path, { end_time: time, is_time_measuring: false });
+                }}
+                is_time_measuring={this.props.node.is_time_measuring}
+              />
+            </div>
+          )}
 
         </div>
       </div>
