@@ -88,13 +88,17 @@ class Tasks extends Component {
               treeData={this.props.tasks.treeData}
               onChange={newState => this.props.updateTasksState(newState)}
               nodeContentRenderer={Task}
-              generateNodeProps={() => ({
+              generateNodeProps={(callbackParams) => {
+                console.log('callbackParams', callbackParams.node.title, callbackParams);
+                return {
+                  lastElement: callbackParams.lowerSiblingCounts.slice(-1)[0] === 0,
                   actions: {
                     addTask: this.props.addTask,
                     deleteTask: this.props.deleteTask,
                     updateTask: this.props.updateTask
                   }
-                })}
+                };
+              }}
             />
           </div>
         </MuiThemeProvider>
