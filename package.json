@@ -13,6 +13,7 @@
     "flow-typed": "rimraf flow-typed/npm && flow-typed install --overwrite || true",
     "lint": "eslint app",
     "lint-fix": "npm run lint -- --fix app/**/*.js",
+    "precommit": "lint-staged",
     "lint-styles": "stylelint app/*.css app/components/*.css --syntax scss",
     "lint-styles-fix": "stylefmt -r app/*.css app/components/*.css",
     "package": "npm run build && build --publish never",
@@ -143,7 +144,7 @@
     "electron-devtools-installer": "^2.2.0",
     "enzyme": "^3.3.0",
     "enzyme-to-json": "^3.3.0",
-    "eslint": "^4.16.0",
+    "eslint": "^4.18.2",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-formatter-pretty": "^1.1.0",
     "eslint-import-resolver-webpack": "^0.8.3",
@@ -163,9 +164,11 @@
     "flow-runtime": "^0.16.0",
     "flow-typed": "^2.1.2",
     "html-webpack-plugin": "^2.29.0",
+    "husky": "^0.14.3",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^22.1.4",
     "jsdom": "^11.0.0",
+    "lint-staged": "^7.0.0",
     "minimist": "^1.2.0",
     "node-sass": "^4.5.3",
     "react-addons-test-utils": "^15.6.0",
@@ -204,6 +207,12 @@
     "redux": "^3.7.1",
     "redux-thunk": "^2.2.0",
     "source-map-support": "^0.5.2"
+  },
+  "lint-staged": {
+    "app/**/*.{js,jsx}": [
+      "eslint --fix",
+      "git add"
+    ]
   },
   "devEngines": {
     "node": ">=7.x",
