@@ -40,7 +40,6 @@ type Props = {
 
   // Drag and drop API functions
   // Drag source
-  clickButtonFunction: Function,
   connectDragPreview: Function,
   connectDragSource: Function,
   parentNode: ?Object, // Needed for dndManager
