@@ -45,7 +45,9 @@ class Task extends Component {
   handleAddChildTask() {
     const indexPath = this.props.task.indexPath;
     const parentIndexPath = indexPath.slice(0, indexPath.length);
-    this.props.addTask(parentIndexPath, { text: '', active: true, complete: false, expanded: true });
+    this.props.addTask(parentIndexPath, {
+      text: '', active: true, complete: false, expanded: true
+    });
     event.preventDefault();
   }
 
@@ -110,7 +112,7 @@ class Task extends Component {
           </FloatingActionButton>
         </MuiThemeProvider>
       </div>
-      );
+    );
 
     if (this.props.task.active) {
       contextDom = (

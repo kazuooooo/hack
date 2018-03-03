@@ -9,7 +9,6 @@ import styles from './Tasks.css';
 import Task from '../components/Task';
 
 class Tasks extends Component {
-
   constructor(props) {
     super(props);
     this.state = { text: '' };
@@ -52,7 +51,7 @@ class Tasks extends Component {
                     deleteTask: this.props.deleteTask,
                     updateTask: this.props.updateTask
                   }
-                }
+                };
               }}
             />
           </div>

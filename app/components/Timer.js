@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import ContentForward from 'material-ui/svg-icons/content/forward';
 
 class Timer extends Component {
-
   constructor() {
     super();
     this.state = { time: {}, seconds: 0 };
