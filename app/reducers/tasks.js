@@ -8,7 +8,7 @@ const defaultState = {
   }],
   treeIndex: 0
 };
-export default function tasks(tasksState = [], action) {
+export default function tasks(tasksState = defaultState, action) {
   switch (action.type) {
     case ADD_TASK: {
       const newState = addNodeUnderParent({
