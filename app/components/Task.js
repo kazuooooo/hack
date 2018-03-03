@@ -194,7 +194,7 @@ class Task extends Component<Props, State> {
             }
           />
           <div className={styles.rowLabel}>
-            <button
+            <span
               className={
                       styles.rowTitle +
                       (node.complete ? ` ${styles.rowTitleCompleted}` : '')
@@ -210,7 +210,7 @@ class Task extends Component<Props, State> {
                         treeIndex,
                       })
                       : nodeTitle}
-            </button>
+            </span>
 
             {nodeSubtitle && (
               <span className={styles.rowSubtitle}>
