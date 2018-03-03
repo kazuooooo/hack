@@ -17,12 +17,12 @@ type NodeType = {
   title: string,
   active: boolean,
   complete: boolean,
-  subtitle: string
+  subtitle?: string
 }
 type Props = {
   node: NodeType,
-  title: Function | NodeType,
-  subtitle: Function | NodeType,
+  title: null | Function | NodeType,
+  subtitle: null | Function | NodeType,
   path: [string | number],
   treeIndex: number,
   treeId: string,
@@ -31,7 +31,7 @@ type Props = {
   canDrag: boolean,
   scaffoldBlockPxWidth: number,
   toggleChildrenVisibility: Function,
-  buttons: [NodeType],
+  buttons: [?NodeType],
   className: string,
   style: Object,
 
@@ -42,10 +42,10 @@ type Props = {
   clickButtonFunction: Function,
   connectDragPreview: Function,
   connectDragSource: Function,
-  parentNode: Object, // Needed for dndManager
+  parentNode: ?Object, // Needed for dndManager
   isDragging: boolean,
   didDrop: boolean,
-  draggedNode: Object,
+  draggedNode: ?Object,
   // Drop target
   isOver: boolean,
   canDrop: boolean
