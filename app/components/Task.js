@@ -81,11 +81,23 @@ class Task extends Component<Props, State> {
     title: null,
     subtitle: null,
   }
+
   constructor(props: Props) {
     super(props);
     // HACK: Use state for input text for performaance
     //       (redux state crazy slow because of render on every character change)
     this.state = { inputText: props.node.title };
+    this.saveInputText = this.saveInputText.bind(this);
+  }
+
+  saveInputText(ev: Object) {
+    if (ev.target.value) {
+      this.props.node.title = ev.target.value;
+      this.props.actions.updateTask(this.props.node, this.props.path, { active: false });
+    } else {
+      // delete if text is empty
+      this.props.actions.deleteTask(this.props.path);
+    }
   }
 
   render() {
@@ -167,15 +179,12 @@ class Task extends Component<Props, State> {
           onChange={(event) => {
             this.setState({ inputText: event.target.value });
           }}
+          onBlur={(ev) => {
+            this.saveInputText(ev);
+          }}
           onKeyPress={(ev) => {
             if (ev.key === 'Enter') {
-              if (ev.target.value) {
-                this.props.node.title = ev.target.value;
-                this.props.actions.updateTask(this.props.node, this.props.path, { active: false });
-              } else {
-                // delete if text is empty
-                this.props.actions.deleteTask(this.props.path);
-              }
+              this.saveInputText(ev);
             }
           }
           }
@@ -184,46 +193,36 @@ class Task extends Component<Props, State> {
     } else {
       // span
       taskDom = (
-        <div style={{ display: 'flex' }}>
-          <Checkbox
-            style={{ display: 'inline-block', width: '30px' }}
-            checked={node.complete}
-            onCheck={(_, checked) => {
-              this.props.actions.updateTask(this.props.node, this.props.path, { complete: checked });
-            }
-            }
-          />
-          <div className={styles.rowLabel}>
-            <button
-              className={
-                      styles.rowTitle +
-                      (node.complete ? ` ${styles.rowTitleCompleted}` : '')
-                    }
-              onClick={() => {
-                      this.props.actions.updateTask(this.props.node, this.props.path, { active: true });
-                    }}
-            >
-              {typeof nodeTitle === 'function'
-                      ? nodeTitle({
-                        node,
-                        path,
-                        treeIndex,
-                      })
-                      : nodeTitle}
-            </button>
+        <div className={styles.rowLabel}>
+          <span
+            className={
+                styles.rowTitle +
+                (node.complete ? ` ${styles.rowTitleCompleted}` : '')
+              }
+            onClick={() => {
+                this.props.actions.updateTask(this.props.node, this.props.path, { active: true });
+              }}
+          >
+            {typeof nodeTitle === 'function'
+                ? nodeTitle({
+                  node,
+                  path,
+                  treeIndex,
+                })
+                : nodeTitle}
+          </span>
 
-            {nodeSubtitle && (
-              <span className={styles.rowSubtitle}>
+          {nodeSubtitle && (
+            <span className={styles.rowSubtitle}>
                 {typeof nodeSubtitle === 'function'
-                        ? nodeSubtitle({
-                          node,
-                          path,
-                          treeIndex,
-                        })
-                        : nodeSubtitle}
-              </span>
-            )}
-          </div>
+                  ? nodeSubtitle({
+                    node,
+                    path,
+                    treeIndex,
+                  })
+                  : nodeSubtitle}
+            </span>
+          )}
         </div>
       );
     }
@@ -287,7 +286,17 @@ class Task extends Component<Props, State> {
                   (!canDrag ? ` ${styles.rowContentsDragDisabled}` : '')
                 }
             >
-              {taskDom}
+              <div style={{ display: 'flex', alignItems: 'center' }}>
+                <Checkbox
+                  style={{ display: 'inline-block', width: '30px' }}
+                  checked={node.complete}
+                  onCheck={(_, checked) => {
+                      this.props.actions.updateTask(this.props.node, this.props.path, { complete: checked });
+                    }
+                    }
+                />
+                {taskDom}
+              </div>
               <div className={styles.rowToolbar}>
                 {buttons.map((btn, index) => (
                   <div
@@ -330,10 +339,16 @@ class Task extends Component<Props, State> {
             </MuiThemeProvider>
             <Timer
               onStart={(time) => {
-                  this.props.actions.updateTask(this.props.node, this.props.path, { start_time: time, is_time_measuring: true });
+                  this.props.actions.updateTask(this.props.node, this.props.path, {
+                    start_time: time,
+                    is_time_measuring: true
+                  });
                 }}
               onStop={(time) => {
-                  this.props.actions.updateTask(this.props.node, this.props.path, { end_time: time, is_time_measuring: false });
+                  this.props.actions.updateTask(this.props.node, this.props.path, {
+                    end_time: time,
+                    is_time_measuring: false
+                  });
                 }}
               is_time_measuring={this.props.node.is_time_measuring}
             />
