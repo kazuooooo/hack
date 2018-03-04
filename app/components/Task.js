@@ -38,8 +38,6 @@ type Props = {
 
   actions: Object,
   isLastElement: boolean,
-  isFirstElement: boolean,
-
   // Drag and drop API functions
   // Drag source
   connectDragPreview: Function,
@@ -132,9 +130,6 @@ class Task extends Component<Props, State> {
       // updateTasksState,
       ...otherProps
     } = this.props;
-
-
-    console.log('inside new task', this.props.node.title, this.props.lastElement);
 
     const nodeTitle = title || node.title;
     const nodeSubtitle = subtitle || node.subtitle;
@@ -359,9 +354,6 @@ class Task extends Component<Props, State> {
               is_time_measuring={this.props.node.is_time_measuring}
             />
           </div>)}
-          {this.props.isLastElement && !this.props.isFirstElement &&(
-            <div>this is last child!!</div>
-          )}
         </div>
       </div>
     );
