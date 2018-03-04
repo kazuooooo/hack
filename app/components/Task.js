@@ -37,6 +37,8 @@ type Props = {
   style: Object,
 
   actions: Object,
+  isLastElement: boolean,
+  isFirstElement: boolean,
 
   // Drag and drop API functions
   // Drag source
@@ -357,7 +359,9 @@ class Task extends Component<Props, State> {
               is_time_measuring={this.props.node.is_time_measuring}
             />
           </div>)}
-
+          {this.props.isLastElement && !this.props.isFirstElement &&(
+            <div>this is last child!!</div>
+          )}
         </div>
       </div>
     );
