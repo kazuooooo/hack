@@ -24,7 +24,7 @@ export default function tasks(tasksState = defaultState, action) {
 
       if (action.params.active) {
         newState = deactiveAllTasks(tasksState, action.path);
-      };
+      }
 
       const newNode = Object.assign(action.node, action.params);
       newState = changeNodeAtPath({
