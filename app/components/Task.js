@@ -131,9 +131,6 @@ class Task extends Component<Props, State> {
       ...otherProps
     } = this.props;
 
-
-    console.log('inside new task', this.props.node.title, this.props.lastElement);
-
     const nodeTitle = title || node.title;
     const nodeSubtitle = subtitle || node.subtitle;
 

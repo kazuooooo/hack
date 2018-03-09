@@ -49,9 +49,7 @@ class Tasks extends Component {
     const dataPath = storage.getDataPath();
     storage.set('tasks', this.props.tasks, (error) => {
       if (error) throw error;
-      console.log('tasks.saved');
     });
-    console.log('____________', this.props, JSON.stringify(this.props.tasks), dataPath);
     this.setState({ drawerOpen: false });
   }
   handleImportFile = () => {
@@ -98,17 +96,14 @@ class Tasks extends Component {
               treeData={this.props.tasks.treeData}
               onChange={newState => this.props.updateTasksState(newState)}
               nodeContentRenderer={Task}
-              generateNodeProps={(callbackParams) => {
-                console.log('callbackParams', callbackParams.node.title, callbackParams);
-                return {
+              generateNodeProps={(callbackParams) => ({
                   lastElement: callbackParams.lowerSiblingCounts.slice(-1)[0] === 0,
                   actions: {
                     addTask: this.props.addTask,
                     deleteTask: this.props.deleteTask,
                     updateTask: this.props.updateTask
                   }
-                };
-              }}
+                })}
             />
           </div>
         </MuiThemeProvider>
