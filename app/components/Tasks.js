@@ -11,6 +11,8 @@ import FlatButton from 'material-ui/FlatButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import MenuItem from 'material-ui/MenuItem';
 import SortableTree from 'react-sortable-tree';
+import storage from 'electron-json-storage';
+
 import styles from './Tasks.css';
 import Task from '../components/Task';
 
@@ -43,7 +45,13 @@ class Tasks extends Component {
 
   handleToggle = () => this.setState({ drawerOpen: !this.state.drawerOpen });
 
-  handleClose = () => this.setState({ drawerOpen: false });
+  handleExportFile = () => {
+    const dataPath = storage.getDataPath();
+    storage.set('tasks', this.props.tasks, (error) => {
+      if (error) throw error;
+    });
+    this.setState({ drawerOpen: false });
+  }
   handleImportFile = () => {
     const { dialog } = require('electron').remote;
     // FixMe currently electorn deialog can't use extensions only
@@ -67,7 +75,7 @@ class Tasks extends Component {
             open={this.state.drawerOpen}
             onRequestChange={(drawerOpen) => this.setState({ drawerOpen })}
           >
-            <MenuItem onClick={this.handleClose}>Export data</MenuItem>
+            <MenuItem onClick={this.handleExportFile}>Export data</MenuItem>
             <MenuItem onClick={this.handleImportFile}>Import data</MenuItem>
           </Drawer>
           <AppBar
@@ -88,17 +96,14 @@ class Tasks extends Component {
               treeData={this.props.tasks.treeData}
               onChange={newState => this.props.updateTasksState(newState)}
               nodeContentRenderer={Task}
-              generateNodeProps={(callbackParams) => {
-                console.log('callbackParams', callbackParams.node.title, callbackParams);
-                return {
+              generateNodeProps={(callbackParams) => ({
                   lastElement: callbackParams.lowerSiblingCounts.slice(-1)[0] === 0,
                   actions: {
                     addTask: this.props.addTask,
                     deleteTask: this.props.deleteTask,
                     updateTask: this.props.updateTask
                   }
-                };
-              }}
+                })}
             />
           </div>
         </MuiThemeProvider>
