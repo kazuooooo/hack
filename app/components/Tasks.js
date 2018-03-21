@@ -62,31 +62,6 @@ class Tasks extends Component {
     this.setState({ drawerOpen: !this.state.drawerOpen });
   }
 
-  handleClose = () => {
-    this.setState({ drawerOpen: false });
-  }
-
-  handleExportFile = () => {
-    const dataPath = storage.getDataPath();
-    storage.set('tasks', this.props.tasks, (error) => {
-      if (error) throw error;
-    });
-    this.setState({ drawerOpen: false });
-  }
-
-  handleImportFile = () => {
-    // FixMe currently electorn deialog can't use extensions only
-    // https://github.com/electron/electron/issues/11391
-    dialog.showOpenDialog({
-      properties: ['openFile'],
-      filters: [
-        { name: 'test', extensions: ['json'] }
-      ]
-    }, (filename) => {
-      console.log(filename.toString());
-    });
-  }
-
   handleExport = (converter) => {
     const convertedText = converter.convert(this.props.tasks);
     dialog.showSaveDialog({
@@ -121,8 +96,6 @@ class Tasks extends Component {
             open={this.state.drawerOpen}
             onRequestChange={(drawerOpen) => this.setState({ drawerOpen })}
           >
-            <MenuItem onClick={this.handleExportFile}>Export data</MenuItem>
-            <MenuItem onClick={this.handleImportFile}>Import data</MenuItem>
             <MenuItem
               primaryText="ExportData"
               rightIcon={<ArrowDropRight />}
