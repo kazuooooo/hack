@@ -154,19 +154,6 @@ class Tasks extends Component {
           />
 
           <div style={{ height: 1000 }}>
-            <SortableTree
-              treeData={this.props.tasks.treeData}
-              onChange={newState => this.props.updateTasksState(newState)}
-              nodeContentRenderer={Task}
-              generateNodeProps={(callbackParams) => ({
-                lastElement: callbackParams.lowerSiblingCounts.slice(-1)[0] === 0,
-                actions: {
-                  addTask: this.props.addTask,
-                  deleteTask: this.props.deleteTask,
-                  updateTask: this.props.updateTask
-                }
-              })}
-            />
           </div>
         </MuiThemeProvider>
         <MuiThemeProvider>

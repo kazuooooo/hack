@@ -9,7 +9,9 @@ import './app.global.css';
 const store = configureStore();
 
 render(
-  <div>aaaa</div>,
+  <AppContainer>
+    <Root store={store} history={history} />
+  </AppContainer>,
   document.getElementById('root')
 );
 
