@@ -80,6 +80,7 @@ class Task extends Component<Props, State> {
     canDrop: false,
     title: null,
     subtitle: null,
+    isLastElement: false
   }
 
   constructor(props: Props) {
