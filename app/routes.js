@@ -6,7 +6,7 @@ import TasksPage from './containers/TasksPage';
 export default () => (
   <App>
     <Switch>
-      <Route exact path="/" component={TasksPage} />
+      <Route path="/" component={TasksPage} />
     </Switch>
   </App>
 );
