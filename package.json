@@ -191,6 +191,7 @@
   "dependencies": {
     "devtron": "^1.4.0",
     "electron-debug": "^1.2.0",
+    "electron-json-storage": "^4.0.2",
     "font-awesome": "^4.7.0",
     "history": "^4.6.3",
     "material-ui": "^0.20.0",

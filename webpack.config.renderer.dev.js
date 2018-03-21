@@ -215,7 +215,7 @@ export default merge.smart(baseConfig, {
     new webpack.NoEmitOnErrorsPlugin(),
 
     /**
-     * Create global CONSTANTS which can be configured at compile time.
+     * Create global constants which can be configured at compile time.
      *
      * Useful for allowing different behaviour between development builds and
      * release builds

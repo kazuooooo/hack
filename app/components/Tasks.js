@@ -11,6 +11,8 @@ import FlatButton from 'material-ui/FlatButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import MenuItem from 'material-ui/MenuItem';
 import SortableTree from 'react-sortable-tree';
+import storage from 'electron-json-storage';
+
 import styles from './Tasks.css';
 import Task from '../components/Task';
 import ArrowDropRight from 'material-ui/svg-icons/navigation-arrow-drop-right';
@@ -64,6 +66,14 @@ class Tasks extends Component {
     this.setState({ drawerOpen: false });
   }
 
+  handleExportFile = () => {
+    const dataPath = storage.getDataPath();
+    storage.set('tasks', this.props.tasks, (error) => {
+      if (error) throw error;
+    });
+    this.setState({ drawerOpen: false });
+  }
+
   handleImportFile = () => {
     // FixMe currently electorn deialog can't use extensions only
     // https://github.com/electron/electron/issues/11391
@@ -83,11 +93,11 @@ class Tasks extends Component {
       title: CONSTANTS.MESSAGES.SELECT_FOLDER,
       // properties: ["openDirectory"]
     }, (fileName) => {
-      if(fileName){
+      if (fileName) {
         try {
           fs.writeFileSync(fileName, convertedText, 'utf-8');
           alert(CONSTANTS.MESSAGES.FILE_EXPORTED);
-        } catch(e) {
+        } catch (e) {
           alert(CONSTANTS.MESSAGES.FAIL_TO_EXPORT);
         }
       }
@@ -111,6 +121,7 @@ class Tasks extends Component {
             open={this.state.drawerOpen}
             onRequestChange={(drawerOpen) => this.setState({ drawerOpen })}
           >
+            <MenuItem onClick={this.handleExportFile}>Export data</MenuItem>
             <MenuItem onClick={this.handleImportFile}>Import data</MenuItem>
             <MenuItem
               primaryText="ExportData"
@@ -147,17 +158,14 @@ class Tasks extends Component {
               treeData={this.props.tasks.treeData}
               onChange={newState => this.props.updateTasksState(newState)}
               nodeContentRenderer={Task}
-              generateNodeProps={(callbackParams) => {
-                return {
-                  // isLastElement: callbackParams.lowerSiblingCounts.slice(-1)[0] === 0,
-                  isLastElement: false,
-                  actions: {
-                    addTask: this.props.addTask,
-                    deleteTask: this.props.deleteTask,
-                    updateTask: this.props.updateTask
-                  }
-                };
-              }}
+              generateNodeProps={(callbackParams) => ({
+                lastElement: callbackParams.lowerSiblingCounts.slice(-1)[0] === 0,
+                actions: {
+                  addTask: this.props.addTask,
+                  deleteTask: this.props.deleteTask,
+                  updateTask: this.props.updateTask
+                }
+              })}
             />
           </div>
         </MuiThemeProvider>
