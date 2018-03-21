@@ -15,6 +15,21 @@ import storage from 'electron-json-storage';
 
 import styles from './Tasks.css';
 import Task from '../components/Task';
+import ArrowDropRight from 'material-ui/svg-icons/navigation-arrow-drop-right';
+import MarkDownConverter from '../utils/MarkDownConverter';
+import JSONConverter from '../utils/JSONConverter';
+import { clipboard } from 'electron';
+import CONSTANTS from '../constants';
+
+const Converters = {
+  JSON: JSONConverter,
+  MARKDOWN: MarkDownConverter
+};
+
+const { dialog } = require('electron').remote;
+const fs = require('fs');
+
+Object.freeze(Converters);
 
 class Tasks extends Component {
   constructor(props) {
@@ -43,7 +58,13 @@ class Tasks extends Component {
     );
   }
 
-  handleToggle = () => this.setState({ drawerOpen: !this.state.drawerOpen });
+  handleToggle = () => {
+    this.setState({ drawerOpen: !this.state.drawerOpen });
+  }
+
+  handleClose = () => {
+    this.setState({ drawerOpen: false });
+  }
 
   handleExportFile = () => {
     const dataPath = storage.getDataPath();
@@ -52,8 +73,8 @@ class Tasks extends Component {
     });
     this.setState({ drawerOpen: false });
   }
+
   handleImportFile = () => {
-    const { dialog } = require('electron').remote;
     // FixMe currently electorn deialog can't use extensions only
     // https://github.com/electron/electron/issues/11391
     dialog.showOpenDialog({
@@ -63,6 +84,31 @@ class Tasks extends Component {
       ]
     }, (filename) => {
       console.log(filename.toString());
+    });
+  }
+
+  handleExport = (converter) => {
+    const convertedText = converter.convert(this.props.tasks);
+    dialog.showSaveDialog({
+      title: CONSTANTS.MESSAGES.SELECT_FOLDER,
+      // properties: ["openDirectory"]
+    }, (fileName) => {
+      if (fileName) {
+        try {
+          fs.writeFileSync(fileName, convertedText, 'utf-8');
+          alert(CONSTANTS.MESSAGES.FILE_EXPORTED);
+        } catch (e) {
+          alert(CONSTANTS.MESSAGES.FAIL_TO_EXPORT);
+        }
+      }
+    });
+  }
+
+  handleCopyToClipBoard = (converter) => {
+    const convertedText = converter.convert(this.props.tasks);
+    clipboard.writeText(convertedText);
+    dialog.showMessageBox({
+      message: 'Copy to clipboard :)',
     });
   }
 
@@ -77,6 +123,22 @@ class Tasks extends Component {
           >
             <MenuItem onClick={this.handleExportFile}>Export data</MenuItem>
             <MenuItem onClick={this.handleImportFile}>Import data</MenuItem>
+            <MenuItem
+              primaryText="ExportData"
+              rightIcon={<ArrowDropRight />}
+              menuItems={[
+                <MenuItem primaryText="JSON" onClick={() => this.handleExport(Converters.JSON)} />,
+                <MenuItem primaryText="MarkDown" onClick={() => this.handleExport(Converters.MARKDOWN)} />,
+              ]}
+            />
+            <MenuItem
+              primaryText="CopyToClipBoard"
+              rightIcon={<ArrowDropRight />}
+              menuItems={[
+                <MenuItem primaryText="JSON" onClick={() => this.handleCopyToClipBoard(Converters.JSON)} />,
+                <MenuItem primaryText="MarkDown" onClick={() => this.handleCopyToClipBoard(Converters.MARKDOWN)} />,
+              ]}
+            />
           </Drawer>
           <AppBar
             iconElementLeft={
@@ -97,13 +159,13 @@ class Tasks extends Component {
               onChange={newState => this.props.updateTasksState(newState)}
               nodeContentRenderer={Task}
               generateNodeProps={(callbackParams) => ({
-                  lastElement: callbackParams.lowerSiblingCounts.slice(-1)[0] === 0,
-                  actions: {
-                    addTask: this.props.addTask,
-                    deleteTask: this.props.deleteTask,
-                    updateTask: this.props.updateTask
-                  }
-                })}
+                lastElement: callbackParams.lowerSiblingCounts.slice(-1)[0] === 0,
+                actions: {
+                  addTask: this.props.addTask,
+                  deleteTask: this.props.deleteTask,
+                  updateTask: this.props.updateTask
+                }
+              })}
             />
           </div>
         </MuiThemeProvider>

@@ -37,7 +37,7 @@ type Props = {
   style: Object,
 
   actions: Object,
-
+  isLastElement: boolean,
   // Drag and drop API functions
   // Drag source
   connectDragPreview: Function,
@@ -354,7 +354,6 @@ class Task extends Component<Props, State> {
               is_time_measuring={this.props.node.is_time_measuring}
             />
           </div>)}
-
         </div>
       </div>
     );
