@@ -80,6 +80,7 @@ class Task extends Component<Props, State> {
     canDrop: false,
     title: null,
     subtitle: null,
+    isLastElement: false
   }
 
   constructor(props: Props) {
@@ -173,7 +174,8 @@ class Task extends Component<Props, State> {
         // hintText need to avoid warning
         // refer this https://github.com/mui-org/material-ui/issues/4659
         <TextField
-          id={this._reactInternalInstance._rootNodeID}
+          // FIXME: can not build with this
+          // id={this._reactInternalInstance._rootNodeID}
           hintText="type task"
           name={nodeTitle}
           value={this.state.inputText}
