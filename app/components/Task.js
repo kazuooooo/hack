@@ -1,13 +1,16 @@
 // @flow
+// absolute
 import React, { Component, type Node } from 'react';
-// import PropTypes from 'prop-types';
+import Checkbox from 'material-ui/Checkbox/Checkbox';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+// import PropTypes from 'prop-types';
 import FloatingActionButton from 'material-ui/FloatingActionButton/FloatingActionButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import ContentDeleteSweep from 'material-ui/svg-icons/content/delete-sweep';
 import TextField from 'material-ui/TextField/TextField';
+
+// relative
 import Timer from '../components/Timer';
-import Checkbox from 'material-ui/Checkbox/Checkbox';
 import { getIEVersion } from './vendor/browser-utils';
 import baseStyles from './node-renderer-default.scss';
 import { isDescendant } from './vendor/tree-data-utils';
@@ -37,7 +40,7 @@ type Props = {
   style: Object,
 
   actions: Object,
-  isLastElement: boolean,
+  // isLastElement: boolean,
   // Drag and drop API functions
   // Drag source
   connectDragPreview: Function,
@@ -50,9 +53,6 @@ type Props = {
   isOver: boolean,
   canDrop: boolean
 };
-type State = {
-  inputText: string
-}
 
 let styles = baseStyles;
 // Add extra classes in browsers that don't support flex
@@ -66,7 +66,7 @@ if (getIEVersion < 10) {
   };
 }
 
-class Task extends Component<Props, State> {
+class Task extends Component<Props> {
   static defaultProps = {
     isSearchMatch: false,
     isSearchFocus: false,
@@ -80,14 +80,12 @@ class Task extends Component<Props, State> {
     canDrop: false,
     title: null,
     subtitle: null,
-    isLastElement: false
+    isLastElement: false,
+    treeIndex: null
   }
 
   constructor(props: Props) {
     super(props);
-    // HACK: Use state for input text for performaance
-    //       (redux state crazy slow because of render on every character change)
-    this.state = { inputText: '' };
     this.saveInputText = this.saveInputText.bind(this);
   }
 
@@ -173,46 +171,50 @@ class Task extends Component<Props, State> {
       taskDom = (
         // hintText need to avoid warning
         // refer this https://github.com/mui-org/material-ui/issues/4659
-        <TextField
-          // FIXME: can not build with this
-          // id={this._reactInternalInstance._rootNodeID}
-          hintText="type task"
-          name={nodeTitle}
-          value={this.state.inputText}
-          onChange={(event) => {
-            this.setState({ inputText: event.target.value });
-          }}
-          onBlur={(ev) => {
-            this.saveInputText(ev);
-          }}
-          onKeyPress={(ev) => {
-            if (ev.key === 'Enter') {
+        <div>
+          <TextField
+            ref={(input) => {
+              this.inputText = input;
+              if (input) {
+                input.focus();
+              }
+            }}
+            hintText="type task"
+            name={nodeTitle}
+            defaultValue={nodeTitle}
+            onBlur={(ev) => {
               this.saveInputText(ev);
-            }
-          }
-          }
-        />
+            }}
+            onKeyPress={(ev) => {
+              if (ev.key === 'Enter') {
+                this.saveInputText(ev);
+              }
+            }}
+          />
+        </div>
       );
     } else {
       // span
       taskDom = (
         <div className={styles.rowLabel}>
           <span
+            role="presentation"
             className={
-                styles.rowTitle +
-                (node.complete ? ` ${styles.rowTitleCompleted}` : '')
-              }
+              styles.rowTitle +
+              (node.complete ? ` ${styles.rowTitleCompleted}` : '')
+            }
             onClick={() => {
-                this.props.actions.updateTask(this.props.node, this.props.path, { active: true });
-              }}
+              this.props.actions.updateTask(this.props.node, this.props.path, { active: true });
+            }}
+            onKeyPress={() => 1} // TODO
           >
             {typeof nodeTitle === 'function'
-                ? nodeTitle({
-                  node,
-                  path,
-                  treeIndex,
-                })
-                : nodeTitle}
+              ? nodeTitle({
+                node,
+                path,
+                treeIndex,
+              })
+              : nodeTitle}
           </span>
 
           {nodeSubtitle && (
@@ -294,9 +296,12 @@ class Task extends Component<Props, State> {
                   style={{ display: 'inline-block', width: '30px' }}
                   checked={node.complete}
                   onCheck={(_, checked) => {
-                      this.props.actions.updateTask(this.props.node, this.props.path, { complete: checked });
-                    }
-                    }
+                      this.props.actions.updateTask(
+                        this.props.node,
+                        this.props.path,
+                        { complete: checked }
+                      );
+                    }}
                 />
                 {taskDom}
               </div>
