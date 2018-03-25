@@ -1,9 +1,11 @@
-// http://www.material-ui.com/
+// absolute
 import React, { Component } from 'react';
+import { clipboard } from 'electron';
 import PropTypes from 'prop-types';
 import AppBar from 'material-ui/AppBar';
 import FloatingActionButton from 'material-ui/FloatingActionButton';
 import { MuiThemeProvider } from 'material-ui/styles';
+import ArrowDropRight from 'material-ui/svg-icons/navigation-arrow-drop-right';
 import IconButton from 'material-ui/IconButton';
 import NavigationMenu from 'material-ui/svg-icons/navigation/menu';
 import Drawer from 'material-ui/Drawer';
@@ -11,14 +13,12 @@ import FlatButton from 'material-ui/FlatButton';
 import ContentAdd from 'material-ui/svg-icons/content/add';
 import MenuItem from 'material-ui/MenuItem';
 import SortableTree from 'react-sortable-tree';
-import storage from 'electron-json-storage';
 
+// relative
 import styles from './Tasks.css';
 import Task from '../components/Task';
-import ArrowDropRight from 'material-ui/svg-icons/navigation-arrow-drop-right';
 import MarkDownConverter from '../utils/MarkDownConverter';
 import JSONConverter from '../utils/JSONConverter';
-import { clipboard } from 'electron';
 import CONSTANTS from '../constants';
 
 const Converters = {
@@ -34,13 +34,8 @@ Object.freeze(Converters);
 class Tasks extends Component {
   constructor(props) {
     super(props);
-    this.state = { text: '', drawerOpen: false };
-    this.handleChange = this.handleChange.bind(this);
+    this.state = { drawerOpen: false };
     this.handleAddRootTask = this.handleAddRootTask.bind(this);
-  }
-
-  handleChange(event) {
-    this.setState({ text: event.target.value });
   }
 
   // TOOD: この処理は切り出せる
@@ -131,13 +126,13 @@ class Tasks extends Component {
               treeData={this.props.tasks.treeData}
               onChange={newState => this.props.updateTasksState(newState)}
               nodeContentRenderer={Task}
-              generateNodeProps={(callbackParams) => ({
-                lastElement: callbackParams.lowerSiblingCounts.slice(-1)[0] === 0,
+              generateNodeProps={() => ({
+                // lastElement: callbackParams.lowerSiblingCounts.slice(-1)[0] === 0,
                 actions: {
                   addTask: this.props.addTask,
                   deleteTask: this.props.deleteTask,
                   updateTask: this.props.updateTask
-                }
+                },
               })}
             />
           </div>
